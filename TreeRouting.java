@@ -5,12 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class BuildTree {
+public class TreeRouting {
     public static void main(String[] args) throws IOException {
 
         BinaryTree tree = new BinaryTree();
 
-        tree = readFile(tree);
+        readFile(tree);
 
         findDestination(tree);
 
