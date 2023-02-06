@@ -34,14 +34,15 @@ public class BuildTree {
 
     private static void findDestination(BinaryTree tree) throws IOException {
         BufferedReader bufferedReader =
-                new BufferedReader(new FileReader("src/HW1/testdoc.txt"));
+                new BufferedReader(new FileReader("src/HW1/input.txt"));
 
         String line;
         while((line = bufferedReader.readLine()) != null) {
             String[] substring = line.split("\\s+");
             String prefix = substring[0];
             int routingDestination = tree.findRoutingDestination(prefix);
-            System.out.println(routingDestination);
+            System.out.println(prefix.length());
+            System.out.println("Routing Destination of " + prefix + " is: " +routingDestination);
         }
 
     }
