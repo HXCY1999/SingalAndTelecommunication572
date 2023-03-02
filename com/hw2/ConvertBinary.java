@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class ConvertBinary {
     public static void main(String[] args) throws IOException {
@@ -80,17 +81,18 @@ public class ConvertBinary {
         * */
         List<String> flagFrames = new ArrayList<>();
         for(int i = 0; i < FECFrames.size();i++){
+            //append the flag
             String flagFrame = "01111110" + FECFrames.get(i);
-            if(i == FECFrames.size()-1){
+            if(i == FECFrames.size()-1){//the last one also add a flag in the tail
                 flagFrame += "01111110";
             }
             flagFrames.add(flagFrame);
         }
-        for (String s : flagFrames){
+//        for (String s : flagFrames){
                 //verify the length
-            System.out.println(s.length()); //656 = 648+8; the last one is 76=8+60+8
+//            System.out.println(s.length()); //656 = 648+8; the last one is 76=8+60+8
 //            System.out.println(flagFrames.size());
-        }
+//        }
         /*
         * over here we can get the article as binary code
         * 46-frames, each frame contains:
@@ -98,12 +100,75 @@ public class ConvertBinary {
         *   + 200 bits repeating 3 time so totally 600 bits
         *   + 16 bits CRC code with repeating so 48bits
         * so totally 656 bits and the last one is different
-        * last one: 20->repeating:60->flag:8+60+60
+        * last one: 20->repeating:60->flag:8+60+8
         * */
 
         /* Step 5
         *
         * */
+
+        //5.1Firstly randomly change the code, the probability is 10%
+        /*
+        *   First, we define the input string and the probability of changing each bit.
+            Next, we create a StringBuilder to store the output string and a Random object to generate random numbers.
+            Then, we loop through each character in the input string and check whether to change it or not based on the probability. If the generated random number is less than or equal to the probability, we change the bit to its opposite (0 to 1 or 1 to 0). Otherwise, we keep the bit unchanged.
+            Finally, we print the input and output strings.
+        *
+        * */
+        List<String> errorFrames = new ArrayList<>();
+        double probability = 0.1; // 10% probability
+
+        for(String flagFrame : flagFrames){
+            StringBuffer sb = new StringBuffer();
+            Random random = new Random();
+            for(int i = 0; i < flagFrame.length(); i++){
+                if (random.nextDouble() < probability) {
+                    char errorChar = flagFrame.charAt(i) == '0'?'1':'0';
+                    sb.append(errorChar);
+                } else {
+                    sb.append(flagFrame.charAt(i));
+                }
+            }
+            errorFrames.add(sb.toString());
+        }
+//        for(String s : errorFrames){//verify length
+//            System.out.println(s.length());
+//        }
+
+        //After this step we've already got the 10% error 656-bits frames
+        /*
+        * 5.2
+        * Next step is to correct the error bit
+        * */
+        String flag = "01111110";
+        List<String> correctFrames = new ArrayList<>();
+
+        for(String errorFrame : errorFrames){
+             StringBuffer correctFrame = new StringBuffer();
+            // append the flag
+            correctFrame.append(flag);
+            //find the error in each 3 bits
+            for(int i = flag.length(); i < errorFrame.length(); i=i+3){
+                char first = errorFrame.charAt(i);
+                char second = errorFrame.charAt(i);
+                char third = errorFrame.charAt(i);
+                if(first != second && second == third){
+                    correctFrame.append(second).append(second).append(second);
+                }else if(first != second && first == third){
+                    correctFrame.append(first).append(first).append(first);
+                }else if(first == second && second != third){
+                    correctFrame.append(first).append(first).append(first);
+                }else{
+                    correctFrame.append(first).append(first).append(first);
+                }
+            }
+            correctFrames.add(correctFrame.toString());
+        }
+        for(String s: correctFrames){
+            System.out.println(s.length()); //verify the length
+        }
+
+
 
 
 

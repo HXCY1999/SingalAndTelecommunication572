@@ -1,4 +1,3 @@
-package HW1;
 
 public class BinaryTree {
     TreeNode root;
