@@ -164,14 +164,12 @@ public class ConvertBinary {
             }
             correctFrames.add(correctFrame.toString());
         }
-        for(String s: correctFrames){
-            System.out.println(s.length()); //verify the length
-        }
-
-
-
-
-
+//        for(String s: correctFrames){
+//            System.out.println(s.length()); //verify the length
+//        }
+        /*
+        * Next step is to check the CRC
+        * */
     }
 }
 
